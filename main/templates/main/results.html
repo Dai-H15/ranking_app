@@ -1,0 +1,100 @@
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>順位付け</title>
+</head>
+<body>
+    {% if request.user.is_authenticated %}
+    {%if request.user.is_superuser%}
+
+    従業員コード：{{request.user.username}}<br>
+    氏名：{{request.user.staff_name}}<br>
+    <a href="{%url "logout"%}">ログアウト</a><br>
+    <div  id="title">
+        <h2>表示対象の順位付け：
+            {%if error is 1 %}
+        </h2>
+            <br><p>管理者の設定が間違っている可能性があります。Setting内にて2つ以上開催中になっているものがないか確認してください</p>
+        
+            {%elif error is 2%}
+        </h2>
+            <br><p>開催中の順位付けがありません。設定を確認してください。</p>
+            {%elif error is 4%}
+
+            <br><p>投票された人数と設定された人数が異なっています。現在の順位付けの開催人数を見直してください。</p>
+    </h2>
+            {%elif error is 0%}
+            {{data.Ranking_title}}</h2>
+
+            
+
+        {%endif%}
+    {%if can_show is False%}
+    <h3>正常に表示できない可能性があるため、描画を中止しました。全員の投票が完了しているか、受付中の順位付けは1つのみか確認してください。<br>また、描画対象は受付状況がTrueかつ、集計が完了している必要があります。</h3>
+    {%else%}
+    
+    
+    <table border=1>
+        <h3>総合順位・ポイント</h3>
+        <tr>
+            <th>順位</th>
+            <th>氏名</th>
+            <th>従業員コード</th>
+            <th>ポイント</th>
+        </tr>
+        
+            {%for x in result_total%}
+            <tr>
+            {%for z in x%}
+            <td>{{z}}</td>
+            
+            {%endfor%}
+            </tr>
+            {%endfor%}
+            
+            
+        
+        </table><br>
+        <h3>理由・こうすれば良くなる</h3>
+    <table border=1>
+        <tr>
+            <th>名前</th>
+            <th>投票された順位</th>
+            <th>その順位にした理由</th>
+            <th>こうしたら良くなる</th>
+            <th>投票者</th>
+        </tr>
+        {%for i in result_other%}
+        <tr>
+            {%for n in i%}
+            <td>
+                {{n}}
+            </td>
+            {%endfor%}
+        </tr>
+        {%endfor%}
+
+    </table>
+
+    </div>
+
+    
+    
+    {%endif%}
+    <a href="/admin">adminへ移動　(メンテナンス専用)</a><br>
+    <a href ="{%url "settings"%}">管理者画面に移行</a><br>
+    {%endif%}
+    
+    <a href="{%url "index"%}">Topに戻る</a>
+    {%else%}
+    <p>順位付け登録サイトです。以下のボタンからログインまたはユーザー登録を行ってください。</p>
+    <a href="{%url "login"%}">ログイン</a>
+    <a href="{%url "signup"%}">ユーザー登録</a>
+    {%endif%}
+
+
+
+</body>
+</html>

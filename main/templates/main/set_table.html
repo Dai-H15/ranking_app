@@ -1,0 +1,68 @@
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>順位付け</title>
+</head>
+<body>
+    {% if request.user.is_authenticated %}
+    {%if request.user.is_superuser%}
+    従業員コード：{{request.user.username}}<br>
+    氏名：{{request.user.staff_name}}<br>
+    <a href="{%url "logout"%}">ログアウト</a><br>
+
+    <h2>現在登録済みの順位付け</h2>
+    {%if error%}
+    <h3>現在登録された順位付けはありません。以下から登録を行ってください。</h3>
+    {%endif%}
+    {%for setting in settings%}
+    <p>id :{{setting.id}}</p>
+    <p>順位付け名：{{setting}}</p>
+    <p>登録人数：{{setting.Num_of_people}}<p>
+    <p>投票受付中：{{setting.is_open}}</p>
+    <p>名前公開設定：{{setting.publicity}}</p>
+    __________________________________________<br>
+    {%endfor%}
+
+        <h3>順位付けを編集</h3>
+    <ul>
+    <form method= "post">
+        {%csrf_token%}
+        <label for="id">id(編集以外は自動入力を使用):</label>
+        <input id="id" name="id" type="number" value="{{id}}"><br>
+
+        <label for ="Ranking_title">順位付けのタイトル:</label>
+        <input id="Ranking_title" name="Ranking_title" type="text"><br>
+
+        <label for="Num_of_people">順位付け参加人数(登録人数)</label>
+        <input id="Num_of_people" name="Num_of_people" type="number"><br>
+
+        <label for="is_open">投票受付開始</label>
+        <input type="hidden" name="is_open" value="0">
+        <input id="is_open" name="is_open" type="checkbox" value="1"><br>
+
+        <label for="publicity">集計時に名前を表示する：</label>
+        <input type="hidden" name="publicity" value="0">
+        <input id="publicity" name="publicity" type="checkbox" value="1"><br>
+        
+        <input id="submit" name="submit" type="submit">
+    </form>
+</ul>
+    {%endif%}
+        {%else%}
+    <p>順位付け登録サイトです。以下のボタンからログインまたはユーザー登録を行ってください。</p>
+    <a href="{%url "login"%}">ログイン</a>
+    <a href="{%url "signup"%}">ユーザー登録</a>
+
+    {%endif%}
+    {%if request.user.is_superuser%}
+    <a href="/admin">adminへ移動　(メンテナンス専用)</a><br>
+    <a href ="{%url "settings"%}">管理者設定に移動</a><br>
+
+    {%endif%}
+    <a href="{%url "index"%}">Topに戻る</a>
+
+
+</body>
+</html>

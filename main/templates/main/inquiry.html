@@ -1,0 +1,64 @@
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>順位付け</title>
+</head>
+<body>
+    {% if request.user.is_authenticated %}
+    {%if request.user.is_superuser%}
+
+    従業員コード：{{request.user.username}}<br>
+    氏名：{{request.user.staff_name}}<br>
+    <a href="{%url "logout"%}">ログアウト</a><br>
+    <div id="title">
+        <h2>開催中の順位付け：
+            {%if error is 1 %}
+        </h2>
+            <br><p>管理者の設定が間違っている可能性があります。Setting内にて2つ以上オープンになっているものがないか確認してください</p>
+        
+            {%elif error is 2%}
+        </h2>
+            <br><p>開催中の順位付けがありません。設定を確認してください。</p>
+            {%elif error is 3%}
+        </h2>
+        <br><p>Settingテーブル設定が不正です。公開に設定した順位付けの数を確認してください。</p>
+        {%elif error is 4%}
+        </h2>
+        <br><p>順位付け参加登録者数と設定された人数を確認してください。</p>
+        {%else%}
+        {{data.Ranking_title}}</h2>
+
+        
+    {%endif%}
+    </div>
+    {%if yet_list%}
+    <h2>未完了者一覧</h2>
+    <ul>
+    
+    {%for name in yet_list%}
+    <li>{{name}}</li>
+    {%endfor%}
+    </ul>
+    {%else%}
+    {%if error is 0%}
+    <h3>すべての方が回答を完了しています。早速集計を行いましょう。</h3>
+
+    {%endif%}
+    {%endif%}
+    {%endif%}
+    {%else%}
+    <p>順位付け登録サイトです。以下のボタンからログインまたはユーザー登録を行ってください。</p>
+    <a href="{%url "login"%}">ログイン</a>
+    <a href="{%url "signup"%}">ユーザー登録</a>
+    {%endif%}
+    {%if request.user.is_superuser%}
+    <a href="/admin">adminへ移動　(メンテナンス専用)</a><br>
+    <a href ="{%url "settings"%}">管理者設定に移動</a><br>
+    {%endif%}
+    <a href="{%url "index"%}">Topに戻る</a>
+
+
+</body>
+</html>

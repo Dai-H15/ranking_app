@@ -1,0 +1,69 @@
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>順位付け</title>
+</head>
+<body>
+    {% if request.user.is_authenticated %}
+    {%if request.user.is_superuser%}
+    従業員コード：{{request.user.username}}<br>
+    氏名：{{request.user.staff_name}}<br>
+    <a href="{%url "logout"%}">ログアウト</a><br>
+
+    {%if error is 1%}
+    <h3>すでに集計が完了しているため、スタッフの追加はできません。</h3>
+    {%elif error is 2%}
+    <h3>Settingテーブル設定が不正です。公開に設定した順位付けの数を確認してください。</h3>
+    
+
+
+    </h3>
+    {%else%}
+    {%if error is 3%}
+    <h3>ここで登録するスタッフの数は、順位付け参加人数と同数になる必要があります。</h3>
+    {%endif%}
+    <p>現在、以下のスタッフが登録されています。</p>
+    {%if error is 4%}
+    <h3>氏名または従業員コードが空欄です。</h3>
+    {%endif%}
+    <ul>
+    {%for member in members%}
+    
+    <li>{{member}}</li>
+    {%endfor%}
+    </ul>
+    {%if messages%}
+    <h2>{{messages}}</h2>
+    {%endif%}
+    <div class="input">
+    <form method="post"> 
+        {%csrf_token%}
+        <label for ="name">氏名：</label>
+        <input id="name" name="name" type ="text"><br>
+
+        <label for="staff_code">従業員コード：</label>
+        <input id="staff_code" name="staff_code" type ="number"><br>
+        
+        <input id="submit" name="submit" type="submit">
+    </div>
+    {%endif%}
+    {%endif%}
+
+    {%else%}
+    <p>順位付け登録サイトです。以下のボタンからログインまたはユーザー登録を行ってください。</p>
+    <a href="{%url "login"%}">ログイン</a>
+    <a href="{%url "signup"%}">ユーザー登録</a>
+
+    {%endif%}
+    {%if request.user.is_superuser%}
+    <a href="/admin">adminへ移動　(メンテナンス専用)</a><br>
+    <a href ="{%url "settings"%}">管理者設定に移動</a>
+
+    {%endif%}
+    <br><a href="{%url "index"%}">Topに戻る</a>
+
+
+</body>
+</html>

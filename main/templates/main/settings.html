@@ -1,0 +1,70 @@
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>順位付け</title>
+</head>
+<body>
+    {% if request.user.is_authenticated %}
+    {%if request.user.is_superuser%}
+    従業員コード：{{request.user.username}}<br>
+    氏名：{{request.user.staff_name}}<br>
+    <a href="{%url "logout"%}">ログアウト</a><br>
+    <div id="title">
+        <h2>開催中の順位付け：
+            {%if error is 1 %}
+        </h2>
+            <br><p>管理者の設定が間違っている可能性があります。Setting内にて2つ以上オープンになっているものがないか確認してください</p>
+        
+            {%elif error is 2%}
+            <h2>
+            <br><p>開催中の順位付けがありません。設定を確認してください。</p>
+        {%else%}
+        {{data.Ranking_title}}</h2>
+        {%endif%}
+
+        
+    
+    </div>
+    <h2>管理者画面</h2>
+    <div>
+        <ul>
+    <li><a href="{%url "join"%}">順位付け参加者追加</a></li><br>
+    <li><a href = "{%url "set_table"%}">Settingテーブル操作</a></li><br>
+    <li><a href="{%url "inquiry"%}">未完了者一覧</a></li><br>
+    <li><a href="{%url "calculate"%}">個人点数集計</a></li><br>
+    <li><a href ="{%url "results"%}">結果照会</a></li>
+    </ul>
+        </ul>
+    </div>
+    <h2>各種説明・補足</h2>
+    <ul>
+        <li>順位付け参加者追加：追加後、Settingテーブル内のNum_of_peopleの人数を合わせることで順位付けを開始できます。</li><br>
+        <li>Settingテーブル操作：最重要。編集フォーム内にタイトル、参加人数を入力し送信することにより初めて順位付けが開始できます。<br>
+            入力内容を変更・受付状況等を修正する場合は、id欄に対象の順位付けに記載の数字を入力し、各種変更を加えることで内容修正できます<br>
+            なお、受付状況、名前公開設定に関しては、idのみ(タイトル等は入力しない)でも変更できるようになっています。</li><br>
+            <li>未完了者一覧：全員分の回答が完了していない方の名前を抽出します。</li><br>
+            <li>個人点数集計：全投票が終了後、Rankingテーブルから点数を集計し、User_dataテーブルに書き込みを行います。</li><br>
+            <li>結果照会：集計後、User_dataテーブルから点数を吸い出し、順位・寄せられたコメントを表形式で表示します。<br>また、本画面からUser_data内の得点・集計済みフラグを解除することができます</li><br>
+        <ul>なお、データベース内の情報を詳細に確認する場合は、adminページを活用していただくことをおすすめします。<br>
+        また、データベース内のデータは、基本的に削除を行わないようお願いします。</ul><br>
+        <li>試験開発機能：Settingテーブル操作内にて変更を加えた際に、自動的に計算済みフラグとUser_dataテーブルの個人得点を0にします。再集計することで再度照会が可能です</li>
+    </ul>
+    {%endif%}
+    {%else%}
+    <p>順位付け登録サイトです。以下のボタンからログインまたはユーザー登録を行ってください。</p>
+    <a href="{%url "login"%}">ログイン</a>
+    <a href="{%url "signup"%}">ユーザー登録</a>
+    {%endif%}
+
+    
+    {%if request.user.is_superuser%}
+    <a href="/admin">adminへ移動　(メンテナンス専用)</a><br>
+    {%endif%}
+
+    
+    <a href="{%url "index"%}">Topに戻る</a>
+
+</body>
+</html>
